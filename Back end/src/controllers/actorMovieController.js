@@ -50,6 +50,24 @@ export const assignActorToMovie = async (req, res) => {
   }
 };
 
+export const updateActorInMovie = async (req, res) => {
+  try {
+    const relation = await actorMovieService.updateActorInMovie(
+      req.params.id,
+      req.body,
+    );
+    res.status(200).json({ success: true, data: relation });
+  } catch (error) {
+    const statusCode =
+      error.message === 'Cast relation not found' ||
+      error.message === 'Actor not found' ||
+      error.message === 'Movie not found'
+        ? 404
+        : 400;
+    res.status(statusCode).json({ success: false, error: error.message });
+  }
+};
+
 export const removeActorFromMovie = async (req, res) => {
   try {
     const result = await actorMovieService.removeActorFromMovie(req.params.id);

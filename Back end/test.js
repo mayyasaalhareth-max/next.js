@@ -66,6 +66,12 @@ async function runTests() {
     });
     console.log('✓ actorMovieService.assignActorToMovie passed. Role:', castRelation.role);
 
+    const updatedCastRelation = await actorMovieService.updateActorInMovie(
+      castRelation._id,
+      { actor: newActor._id, movie: newMovie._id, role: 'Updated role' },
+    );
+    console.log('✓ actorMovieService.updateActorInMovie passed. Role:', updatedCastRelation.role);
+
     const allCast = await actorMovieService.getAllMovieActors();
     console.log('✓ actorMovieService.getAllMovieActors passed. Count:', allCast.length);
 
@@ -102,6 +108,12 @@ async function runTests() {
     const resMovieActors = await request(app).get('/api/movie-actors');
     if (resMovieActors.status !== 200) throw new Error('GET /api/movie-actors failed');
     console.log('✓ GET /api/movie-actors passed with status 200');
+
+    const resUpdateMovieActor = await request(app)
+      .put(`/api/movie-actors/${castRelation._id}`)
+      .send({ actor: newActor._id, movie: newMovie._id, role: 'Updated HTTP role' });
+    if (resUpdateMovieActor.status !== 200) throw new Error('PUT /api/movie-actors/:id failed');
+    console.log('✓ PUT /api/movie-actors/:id passed with status 200');
 
     const resActorsByMovieHttp = await request(app).get(`/api/movie-actors/movie/${newMovie._id}`);
     if (resActorsByMovieHttp.status !== 200) throw new Error('GET /api/movie-actors/movie/:movieId failed');
